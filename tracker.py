@@ -10,4 +10,6 @@ with sync_playwright() as p:
 
     print(page.title())
 
+    input("Press Enter to close the browser...")
+
     browser.close()
