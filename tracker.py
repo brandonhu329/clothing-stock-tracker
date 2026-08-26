@@ -1,12 +1,13 @@
-import requests
-from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 
 url = "https://www.hollisterco.com/shop/us/p/relaxed-everyday-tee-62788823?seq=33"
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
+with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
 
-response = requests.get(url, headers=headers)
+    page = browser.new_page()
+    page.goto(url)
 
-print(response.status_code)
+    print(page.title())
+
+    browser.close()
