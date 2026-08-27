@@ -13,14 +13,13 @@ with sync_playwright() as p:
     sizes = ["XS", "S", "M", "L", "XL", "XXL"]
 
     for size in sizes:
-        matches = page.get_by_text(size, exact=True)
+        input_id = f"pdp_radio_size_primary_{size}"
+
+        size_input = page.locator(f"#{input_id}")
 
         print("SIZE:", size)
-        print("FOUND:", matches.count())
-
-        for i in range(matches.count()):
-            element = matches.nth(i)
-            print(element.evaluate("(el) => el.outerHTML"))
+        print(size_input.evaluate("(el) => el.outerHTML"))
+        print("DISABLED:", size_input.is_disabled())
 
     input("Press Enter to close the browser...")
 
