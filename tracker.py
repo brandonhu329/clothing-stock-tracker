@@ -10,16 +10,26 @@ with sync_playwright() as p:
 
     print(page.title())
 
-    sizes = ["XS", "S", "M", "L", "XL", "XXL"]
+    wanted_size = "M"
 
-    for size in sizes:
-        input_id = f"pdp_radio_size_primary_{size}"
+    input_id = f"pdp_radio_size_primary_{wanted_size}"
 
-        size_input = page.locator(f"#{input_id}")
+    size_label = page.locator(f'label[for="{input_id}"]')
 
-        print("SIZE:", size)
-        print(size_input.evaluate("(el) => el.outerHTML"))
-        print("DISABLED:", size_input.is_disabled())
+    print("Trying to select size:", wanted_size)
+
+    size_label.click()
+
+    print("Selected size:", wanted_size)
+
+    page.wait_for_timeout(1000)
+
+    add_button = page.get_by_role("button", name="Add To Bag").first
+
+    if add_button.is_enabled():
+        print(wanted_size, "IS IN STOCK")
+    else:
+        print(wanted_size, "IS OUT OF STOCK")
 
     input("Press Enter to close the browser...")
 
