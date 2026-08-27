@@ -10,6 +10,18 @@ with sync_playwright() as p:
 
     print(page.title())
 
+    sizes = ["XS", "S", "M", "L", "XL", "XXL"]
+
+    for size in sizes:
+        matches = page.get_by_text(size, exact=True)
+
+        print("SIZE:", size)
+        print("FOUND:", matches.count())
+
+        for i in range(matches.count()):
+            element = matches.nth(i)
+            print(element.evaluate("(el) => el.outerHTML"))
+
     input("Press Enter to close the browser...")
 
     browser.close()
