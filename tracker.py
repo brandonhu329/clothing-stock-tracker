@@ -8,28 +8,21 @@ with sync_playwright() as p:
     page = browser.new_page()
     page.goto(url)
 
+    cookie_button = page.get_by_role("button", name="Accept All")
+
+    if cookie_button.count() > 0:
+        cookie_button.first.click()
+        print("Cookie popup closed")
+
     print(page.title())
 
     wanted_size = "M"
 
     input_id = f"pdp_radio_size_primary_{wanted_size}"
+    size_input = page.locator(f"#{input_id}")
 
-    size_label = page.locator(f'label[for="{input_id}"]')
-
-    print("Trying to select size:", wanted_size)
-
-    size_label.click()
-
-    print("Selected size:", wanted_size)
-
-    page.wait_for_timeout(1000)
-
-    add_button = page.get_by_role("button", name="Add To Bag").first
-
-    if add_button.is_enabled():
-        print(wanted_size, "IS IN STOCK")
-    else:
-        print(wanted_size, "IS OUT OF STOCK")
+    print("Trying to find size:", wanted_size)
+    print("Number of size inputs found:", size_input.count())
 
     input("Press Enter to close the browser...")
 
