@@ -13,9 +13,21 @@ Exit codes:
 import argparse
 import sys
 
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from playwright.sync_api import sync_playwright
 
 DEFAULT_URL = "https://www.hollisterco.com/shop/us/p/relaxed-everyday-tee-62788823?seq=33"
+
+
+def _dismiss_cookie_banner(page) -> None:
+    """Accept the OneTrust cookie banner if it's showing.
+
+    It overlays the page and blocks clicks on the size buttons otherwise.
+    """
+    try:
+        page.click("#onetrust-accept-btn-handler", timeout=5000)
+    except PlaywrightTimeoutError:
+        pass  # banner wasn't shown (e.g. already accepted) - nothing to do
 
 
 def check_stock(url: str, size: str, headless: bool = True) -> bool:
@@ -27,6 +39,7 @@ def check_stock(url: str, size: str, headless: bool = True) -> bool:
 
         try:
             page.goto(url)
+            _dismiss_cookie_banner(page)
 
             input_id = f"pdp_radio_size_primary_{size}"
             size_label = page.locator(f'label[for="{input_id}"]')
