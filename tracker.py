@@ -24,6 +24,15 @@ with sync_playwright() as p:
     print("Trying to find size:", wanted_size)
     print("Number of size inputs found:", size_input.count())
 
+    page.evaluate(
+    "(id) => document.getElementById(id).click()",
+    input_id)
+
+    page.wait_for_timeout(500)
+
+    print("Selected size:", wanted_size)
+    print("Checked:", size_input.is_checked())
+
     input("Press Enter to close the browser...")
 
     browser.close()
