@@ -17,17 +17,31 @@ def check_stock(context):
         print("Checking stock...")
 
         page.goto(URL)
-        page.wait_for_timeout(1000)
 
-        # Close cookie popup if it appears
-        cookie_button = page.get_by_role("button", name="Accept All")
+        page.wait_for_timeout(2000)
 
-        if cookie_button.count() > 0:
-            try:
-                cookie_button.first.click(timeout=3000)
-                print("Cookie popup closed")
-            except:
-                pass
+        # Close cookie popup
+        try:
+            cookie_button = page.locator(
+                'button:visible',
+                has_text="Accept All"
+            ).first
+
+            cookie_button.wait_for(
+                state="visible",
+                timeout=5000
+            )
+
+            cookie_button.evaluate(
+                "(el) => el.click()"
+            )
+
+            page.wait_for_timeout(1000)
+
+            print("Cookie popup closed")
+
+        except Exception:
+            print("No cookie popup found")
 
         print(page.title())
 
@@ -37,7 +51,10 @@ def check_stock(context):
 
         size_input_id = f"pdp_radio_size_primary_{WANTED_SIZE}"
 
-        size_input = page.locator(f"#{size_input_id}")
+        size_input = page.locator(
+            f"#{size_input_id}"
+        )
+
         size_label = page.locator(
             f'label[for="{size_input_id}"]'
         )
@@ -78,7 +95,10 @@ def check_stock(context):
         )
 
         if length_label.count() == 0:
-            print("Could not find length label:", WANTED_LENGTH)
+            print(
+                "Could not find length label:",
+                WANTED_LENGTH
+            )
             return False
 
         if is_sold_out(length_label):
