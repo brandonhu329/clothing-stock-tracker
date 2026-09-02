@@ -33,6 +33,22 @@ with sync_playwright() as p:
     print("Selected size:", wanted_size)
     print("Checked:", size_input.is_checked())
 
-    input("Press Enter to close the browser...")
+    size_label = page.locator(f'label[for="{input_id}"]')
+
+    print("SIZE HTML:")
+    print(size_label.evaluate("(el) => el.parentElement.outerHTML"))
+
+    page.wait_for_timeout(1000)
+
+    add_button = page.locator("button").filter(has_text="Add To Bag").first
+
+    print("Add To Bag buttons found:", add_button.count())
+
+    if add_button.count() > 0:
+        print("Add To Bag enabled:", add_button.is_enabled())
+        print("Disabled attribute:", add_button.get_attribute("disabled"))
+        print("Aria disabled:", add_button.get_attribute("aria-disabled"))
+
+    input("Press Enter to close the browser...")    
 
     browser.close()
